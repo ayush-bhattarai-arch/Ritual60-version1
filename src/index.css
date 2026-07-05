@@ -1,0 +1,80 @@
+:root {
+  /* Color Palette - calming premium pastels */
+  --bg-gradient: linear-gradient(135deg, #f7f9fc 0%, #f0f4f8 50%, #e8edf4 100%);
+  
+  --text-main: #2d3748;
+  --text-muted: #62728d;
+  --text-light: #94a3b8;
+  
+  --card-bg: rgba(255, 255, 255, 0.75);
+  --card-border: rgba(255, 255, 255, 0.6);
+  --card-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.04), 0 2px 8px 0 rgba(0, 0, 0, 0.02);
+  --card-item-bg: white;
+  
+  /* Soft Pastel Accent Colors */
+  --angry-bg: #fff1f2;
+  --angry-border: #fecdd3;
+  --angry-text: #9f1239;
+  --angry-hover: #ffe4e6;
+  
+  --sad-bg: #eff6ff;
+  --sad-border: #dbeafe;
+  --sad-text: #1e3a8a;
+  --sad-hover: #eff6ff;
+  
+  --panic-bg: #fff7ed;
+  --panic-border: #ffedd5;
+  --panic-text: #c2410c;
+  --panic-hover: #ffedd5;
+  
+  --depr-bg: #f0fdf4;
+  --depr-border: #dcfce7;
+  --depr-text: #166534;
+  --depr-hover: #dcfce7;
+
+  --random-bg: #faf5ff;
+  --random-border: #f3e8ff;
+  --random-text: #6b21a8;
+  --random-hover: #f3e8ff;
+
+  --back-bg: #f8fafc;
+  --back-border: #e2e8f0;
+  --back-text: #475569;
+  --back-hover: #f1f5f9;
+
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}

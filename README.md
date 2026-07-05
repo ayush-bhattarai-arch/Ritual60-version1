@@ -74,3 +74,4 @@ export default defineConfig([
 
 ```
 # Ritual60-version1
+# Ritual60-version1
