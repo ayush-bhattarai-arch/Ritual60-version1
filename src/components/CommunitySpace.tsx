@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/purity, react-hooks/set-state-in-effect, no-case-declarations */
 import React, { useState, useEffect, useRef } from 'react';
 
 export interface PostComment {

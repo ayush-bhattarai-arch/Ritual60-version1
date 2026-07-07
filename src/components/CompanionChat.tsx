@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import type { SessionContext } from './EmotionChallenges';
 
 export interface Message {
   id: string;
@@ -12,6 +13,7 @@ export interface ChatSession {
   title: string;
   messages: Message[];
   isTyping: boolean;
+  sessionContext?: SessionContext;
 }
 
 interface CompanionChatProps {
@@ -23,46 +25,6 @@ interface CompanionChatProps {
   onSendMessage: (chatId: string, text: string) => void;
   onClose: () => void;
 }
-
-export const MOCK_COMPANION_RESPONSES = [
-  "I hear you, and I'm right here with you. Take a slow, comforting breath. I'm listening.",
-  "Thank you for sharing that with me. It is completely valid to feel this way. Let it out.",
-  "That sounds like a lot to carry. Please know you don't have to navigate it alone. I'm here for you.",
-  "I'm listening closely. Remember to be gentle with yourself. You're doing the best you can.",
-  "I appreciate you opening up. Let's take it one step at a time. What else is on your mind?",
-  "I'm here for you, no matter what you're feeling. Take all the time you need to write it out.",
-  "It is okay to feel overwhelmed or tired. Just being here and acknowledging it is a brave step."
-];
-
-const KEYWORD_RESPONSES: { keywords: string[]; response: string }[] = [
-  {
-    keywords: ['angry', 'mad', 'furious', 'pissed', 'annoyed', 'hate', 'frustrated'],
-    response: "It's completely okay to feel angry. It's a natural signal that something needs attention. Let's take a deep breath together. I'm here to listen to your frustrations."
-  },
-  {
-    keywords: ['sad', 'cry', 'depressed', 'lonely', 'hurt', 'pain', 'grief'],
-    response: "I'm so sorry you're feeling sad right now. It can feel really heavy, but I'm here with you. Allow yourself to feel, and know that you are not alone."
-  },
-  {
-    keywords: ['anxious', 'panic', 'scared', 'worry', 'afraid', 'stressed', 'nervous'],
-    response: "I hear how anxious you feel. Let's press pause for a moment. Feel the ground beneath your feet. You are safe here with me. Let's breathe slowly."
-  },
-  {
-    keywords: ['tired', 'exhausted', 'give up', 'done', 'sleepy'],
-    response: "You've been holding onto a lot. It is okay to be tired and just rest. You don't have to figure everything out right this second. Rest with me for a bit."
-  }
-];
-
-export const getCompanionResponse = (userText: string): string => {
-  const textLower = userText.toLowerCase();
-  for (const item of KEYWORD_RESPONSES) {
-    if (item.keywords.some(keyword => textLower.includes(keyword))) {
-      return item.response;
-    }
-  }
-  const randomIndex = Math.floor(Math.random() * MOCK_COMPANION_RESPONSES.length);
-  return MOCK_COMPANION_RESPONSES[randomIndex];
-};
 
 export function CompanionChat({
   chats,
@@ -77,6 +39,9 @@ export function CompanionChat({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const activeChat = chats.find(c => c.id === activeChatId);
+  const contextLabel = activeChat?.sessionContext
+    ? `Currently helping with: ${activeChat.sessionContext.emotion}`
+    : 'Currently here with you';
 
   // Scroll to bottom on new message or when active chat changes
   useEffect(() => {
@@ -92,8 +57,7 @@ export function CompanionChat({
   };
 
   return (
-    <div className="chat-layout fade-in">
-      {/* Sidebar for Chat Management */}
+    <div className="chat-layout companion-chat-v2 fade-in">
       <div className="chat-sidebar">
         <button className="btn-new-chat" onClick={onNewChat}>
           + New Chat
@@ -120,26 +84,35 @@ export function CompanionChat({
               </button>
             </div>
           ))}
-          {chats.length === 0 && (
-            <div className="sidebar-empty-state">No conversations yet</div>
-          )}
+          {chats.length === 0 && <div className="sidebar-empty-state">No conversations yet</div>}
         </div>
       </div>
 
-      {/* Main Chat Thread Area */}
       <div className="chat-main-area">
         <div className="chat-header">
           <button className="btn-back" onClick={onClose} style={{ margin: 0 }}>
-            &larr; Home
+            &larr; Check In
           </button>
-          <div className="companion-status">
-            <span className="status-dot"></span>
-            <span className="companion-title">Companion</span>
+          <div className="companion-heading">
+            <div className="companion-status">
+              <span className="status-dot"></span>
+              <span className="companion-title">Companion</span>
+              <span className="online-label">Online</span>
+            </div>
+            <span className="context-chip">{contextLabel}</span>
           </div>
         </div>
 
         {activeChat ? (
           <>
+            {activeChat.sessionContext && (
+              <div className="chat-context-panel">
+                <span>Emotion: {activeChat.sessionContext.emotion}</span>
+                <span>Exercise: {activeChat.sessionContext.exercise}</span>
+                <span>Outcome: {activeChat.sessionContext.outcome}</span>
+              </div>
+            )}
+
             <div className="messages-container">
               {activeChat.messages.map(msg => (
                 <div key={msg.id} className={`message-bubble-wrapper ${msg.sender}`}>
@@ -183,7 +156,7 @@ export function CompanionChat({
           </>
         ) : (
           <div className="chat-empty-state">
-            <p>Select a conversation from the sidebar or start a new one to chat with your companion.</p>
+            <p>Start a conversation when you are ready.</p>
             <button className="btn-random" onClick={onNewChat} style={{ width: 'auto', padding: '12px 24px' }}>
               + Start a New Chat
             </button>
