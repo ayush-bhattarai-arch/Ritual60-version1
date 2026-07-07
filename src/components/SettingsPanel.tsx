@@ -3,6 +3,7 @@ interface SettingsPanelProps {
   onThemeChange: (theme: string | null) => void;
   onClearChats: () => void;
   isDarkMode?: boolean;
+  onToggleDarkMode?: () => void;
 }
 
 export function SettingsPanel({ theme, onThemeChange, onClearChats, isDarkMode = false }: SettingsPanelProps) {

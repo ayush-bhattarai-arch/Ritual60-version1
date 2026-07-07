@@ -9,7 +9,17 @@ export interface JournalEntry {
   date: string; // yyyy-mm-dd
 }
 
-export function UserJournal() {
+interface IncomingJournalPrompt {
+  id: string;
+  title: string;
+  prompt: string;
+}
+
+interface UserJournalProps {
+  incomingPrompt?: IncomingJournalPrompt | null;
+}
+
+export function UserJournal({ incomingPrompt }: UserJournalProps) {
   const [journals, setJournals] = useState<JournalEntry[]>(() => {
     const saved = localStorage.getItem('calm_space_journals');
     if (saved) {
@@ -38,8 +48,24 @@ export function UserJournal() {
 
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const quillInstance = useRef<Quill | null>(null);
+  const lastPromptIdRef = useRef<string | null>(null);
 
   const activeEntry = journals.find(j => j.id === activeEntryId);
+
+  useEffect(() => {
+    if (!incomingPrompt || lastPromptIdRef.current === incomingPrompt.id) return;
+
+    lastPromptIdRef.current = incomingPrompt.id;
+    const newEntry: JournalEntry = {
+      id: incomingPrompt.id,
+      title: incomingPrompt.title,
+      content: `<h2>${escapeHtml(incomingPrompt.prompt)}</h2><p><br></p>`,
+      date: new Date().toISOString().split('T')[0]
+    };
+
+    setJournals(prev => [newEntry, ...prev]);
+    setActiveEntryId(newEntry.id);
+  }, [incomingPrompt]);
 
   // Sync journals with localStorage
   useEffect(() => {
@@ -244,4 +270,13 @@ export function UserJournal() {
       </div>
     </div>
   );
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
